@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/aubhishekzaman/Data_science/Springboard/SQL/SQLFiles Tier 1/sqlite_db_pythonsqlite.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="165"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1817"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,10:mainFacilities"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Bookings" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="43"/><column index="2" value="34"/><column index="3" value="43"/><column index="4" value="118"/><column index="5" value="34"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Facilities" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="34"/><column index="2" value="94"/><column index="3" value="73"/><column index="4" value="60"/><column index="5" value="69"/><column index="6" value="116"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Members" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="43"/><column index="2" value="106"/><column index="3" value="65"/><column index="4" value="208"/><column index="5" value="49"/><column index="6" value="92"/><column index="7" value="94"/><column index="8" value="117"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">SELECT name 
+FROM Facilities 
+WHERE membercost &gt; 0;</sql><sql name="SQL 2">SELECT count(name) 
+FROM Facilities 
+WHERE membercost == 0;</sql><sql name="SQL 3">SELECT name, facid,  name, membercost,  monthlymaintenance
+FROM Facilities 
+WHERE membercost &gt; 0 AND membercost&lt; 0.2*monthlymaintenance;</sql><sql name="SQL_AZ_project.sql">SELECT *
+FROM Facilities 
+WHERE facid in (1,5);</sql><sql name="SQL 5">SELECT *, (CASE WHEN monthlymaintenance &gt;100
+	THEN 'Expensive'
+	ELSE 'Cheap'
+	END)
+AS Type
+FROM Facilities 
+WHERE membercost &gt; 0 AND membercost&lt; 0.2*monthlymaintenance;</sql><sql name="SQL 6">SELECT firstname, surname, MAX (starttime), facid
+FROM Bookings INNER JOIN Members ON Bookings.memid == Members.memid
+GROUP BY facid;</sql><sql name="SQL 8">SELECT firstname, surname,  facid
+FROM Bookings INNER JOIN Members ON Bookings.memid == Members.memid
+WHERE facid in (0,1)
+GROUP BY facid;
+</sql><sql name="SQL 9">SELECT bookid, slots, Facilities.facid, name,  (surname || ' ' || firstname), 
+(CASE WHEN Bookings.memid == 0 
+THEN slots*guestcost 
+ELSE slots*membercost 
+END)
+FROM (Bookings INNER JOIN Facilities ON Bookings.facid == Facilities.facid) INNER join Members on Bookings.memid == Members.memid
+WHERE starttime like '2012-09-14%'  AND (slots*membercost &gt; 30 OR slots*guestcost &gt;30)
+ORDER BY Bookings.facid
+
+
+
+</sql><sql name="SQL 10">SELECT bookid
+FROM Bookings INNER JOIN Facilities ON Bookings.facid == Facilities.facid
+WHERE starttime like '2012-09-14%'  AND (slots*membercost &gt; 30 OR slots*guestcost &gt;30)
+ORDER BY Bookings.facid</sql><sql name="SQL 11">select name, totalcost from(
+select name, sum(cost) as totalcost
+from(
+SELECT name,
+(CASE WHEN Bookings.memid == 0 THEN slots*guestcost ELSE slots*membercost END) as cost
+FROM (Bookings INNER JOIN Facilities ON Bookings.facid == Facilities.facid))
+group by name
+)
+where totalcost &lt; 1000</sql><sql name="SQL 12">select facid, month, sum(slots) as revenue
+from (select facid, strftime('%m', starttime) as month, slots
+from Bookings
+where memid != 0)
+group by facid, month</sql><sql name="SQL 13"></sql><current_tab id="10"/></tab_sql></sqlb_project>
